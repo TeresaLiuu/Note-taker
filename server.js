@@ -7,54 +7,59 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-app.use(express.urlencoded({extended:true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use('/assets', express.static(__dirname + '/assets'));
 
+
+const dbNotes = JSON.parse(
+    fs.readFileSync(path.join(__dirname, './db.json'), (err, data) => {
+        if (err) throw err;
+    })
+);
+const dbUpdate = dbNotes => {
+    fs.writeFileSync(path.join(__dirname, './db.json'), JSON.stringify(dbNotes),
+        err => {
+            if (err) throw err;
+        })
+};
+
 //routes
 
-app.get('/', (req,res) =>{
+app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, './assets/index.html'));
 });
 
-app.get('/notes', (req,res)=>{
+app.get('/notes', (req, res) => {
     res.sendFile(path.join(__dirname, './assets/notes.html'));
 });
 
-app.get('/api/notes', (req,res) =>{
-    let note = '';
-    fs.readFile('./db.json','utf8',(err,data)=>{
-        if (err) throw err; 
-        note = JSON.parse (data);
-        fs.writeFile('./db.json', JSON.stringify(note),'utf8',err=>{
-            if (err) throw 'something is wrong';
-        });   
-    });
+app.get('/api/notes', (req, res) => {
+    return res.json(dbNotes);
 });
 
-app.post ('/api/notes', (req,res) =>{
-    const newNote = req.body;
-    let note = '';
-    fs.readFile('./db.json', 'utf8', (err,data)=>{
-        if (err) throw err;
-        note = JSON.parse (data);
-        note.push(newNote);
-        fs.writeFile('./db.json', JSON.stringify(note),'utf8',err=>{
-            if (err) throw 'something is wrong';
-        });
-        
-    });
-    res.sendFile(path.join(__dirname, './assets/notes.html'));
+// posting and deleting the notes
+app.post('/api/notes', (req, res) => {
+    let newNote = req.body;
+    let id = dbNotes.length;
+    newNote.id = id + 1;
+    dbNotes.push(newNote);
+    dbUpdate(dbNotes);
+    return res.json(dbNotes);
 });
 
-
-
-
+app.delete('/api/notes/:id', (req, res) => {
+    let id = req.params.id;
+    let x =1 ;
+    delete dbNotes[id - 1];
+    dbUpdate(dbNotes);
+    res.send(dbNotes);
+});
 
 
 
 // //listener
-app.listen(PORT,() => console.log(`App listening on port ${PORT}`));
+app.listen(PORT, () => console.log(`App listening on port ${PORT}`));
 
 
 
