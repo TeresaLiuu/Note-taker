@@ -50,17 +50,22 @@ app.post('/api/notes', (req, res) => {
 
 app.delete('/api/notes/:id', (req, res) => {
     let id = req.params.id;
-    let x =1 ;
-    delete dbNotes[id - 1];
+    for (let i = 0; i < dbNotes.length; ++i) {
+        const note = dbNotes[i];
+        if (parseInt(id) === note.id){
+            dbNotes.splice(i, 1);
+            break;        
+        }
+    }
     dbUpdate(dbNotes);
     res.send(dbNotes);
+
 });
 
 
 
-// //listener
+//listener
 app.listen(PORT, () => console.log(`App listening on port ${PORT}`));
-
 
 
 
