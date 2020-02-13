@@ -54,7 +54,7 @@ app.delete('/api/notes/:id', (req, res) => {
         const note = dbNotes[i];
         if (id === note.id){
             dbNotes.splice(i, 1);
-            break;        
+            break;    
         }
     }
     dbUpdate(dbNotes);
