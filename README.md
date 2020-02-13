@@ -2,7 +2,7 @@
 
 This is a simple Node application that you can type in and delete your list of notes. 
 
-![alt text](/img/screen.png)
+![alt text](/img/screenshot.png)
 
 ## Table 0f Contents
 - General Info
