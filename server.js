@@ -49,10 +49,10 @@ app.post('/api/notes', (req, res) => {
 });
 
 app.delete('/api/notes/:id', (req, res) => {
-    let id = req.params.id;
+    let id = parseInt(req.params.id);
     for (let i = 0; i < dbNotes.length; ++i) {
         const note = dbNotes[i];
-        if (parseInt(id) === note.id){
+        if (id === note.id){
             dbNotes.splice(i, 1);
             break;        
         }
