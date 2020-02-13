@@ -38,6 +38,11 @@ app.get('/api/notes', (req, res) => {
     return res.json(dbNotes);
 });
 
+app.get('*', (req,res) =>{
+    res.send(`<h1> 404 Error.  Page does not exist</h1>`)
+})
+
+
 // posting and deleting the notes
 app.post('/api/notes', (req, res) => {
     let newNote = req.body;
